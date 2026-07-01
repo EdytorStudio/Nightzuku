@@ -45,6 +45,11 @@ public class ShizukuShellLoader {
                     System.exit(1);
                 }
                 return true;
+            } else if (code == 2) {
+                System.err.println("tapi: TAPI is disabled. Enable it in Lab Features of the Nightzuku app.");
+                System.err.flush();
+                System.exit(1);
+                return true;
             }
             return super.onTransact(code, data, reply, flags);
         }

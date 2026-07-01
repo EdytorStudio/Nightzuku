@@ -12,7 +12,7 @@ DEX="$TAPI_DIR/rish_shizuku.dex"
 
 if [ ! -f "$DEX" ]; then
   mkdir -p "$TAPI_DIR"
-  apk_path=$("$PM" path kerneldroid.nightzuku 2>/dev/null | sed 's/package://')
+  apk_path=$("$PM" path kerneldroid.nightzuku 2>/dev/null | sed 's/package://' | tr -d '\r')
   if [ -n "$apk_path" ]; then
     tmpdir=$(mktemp -d -p "$TAPI_DIR")
     "$UNZIP" -o "$apk_path" "assets/rish_shizuku.dex" -d "$tmpdir" 2>/dev/null
@@ -42,4 +42,17 @@ fi
 
 export RISH_APPLICATION_ID="com.termux"
 unset LD_LIBRARY_PATH
-exec "$APP_PROCESS" -Djava.class.path="$DEX" /system/bin --nice-name=tapi rikka.shizuku.shell.ShizukuShellLoader "$@"
+
+FIRST_ARG="${1:-}"
+
+case "$FIRST_ARG" in
+  --help|-h)
+    exec "$APP_PROCESS" -Djava.class.path="$DEX" /system/bin --nice-name=tapi-manager rikka.shizuku.shell.TapiManager "$@"
+    ;;
+  nightzuku|status|start|stop|grant|revoke|modules)
+    exec "$APP_PROCESS" -Djava.class.path="$DEX" /system/bin --nice-name=tapi-manager rikka.shizuku.shell.TapiManager "$@"
+    ;;
+  *)
+    exec "$APP_PROCESS" -Djava.class.path="$DEX" /system/bin --nice-name=tapi rikka.shizuku.shell.ShizukuShellLoader "$@"
+    ;;
+esac

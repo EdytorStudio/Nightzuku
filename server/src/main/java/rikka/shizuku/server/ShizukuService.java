@@ -376,10 +376,19 @@ public class ShizukuService extends Service<ShizukuUserServiceManager, ShizukuCl
         return 0;
     }
 
+    private boolean isManagerOrAuthorized(int callingUid) {
+        int callingAppId = UserHandleCompat.getAppId(callingUid);
+        if (callingAppId == managerAppId || callingUid == 2000 || callingUid == 0) {
+            return true;
+        }
+        List<String> packages = PackageManagerApis.getPackagesForUidNoThrow(callingUid);
+        return packages.contains("com.termux");
+    }
+
     @Override
     public int getFlagsForUid(int uid, int mask) {
-        if (UserHandleCompat.getAppId(Binder.getCallingUid()) != managerAppId) {
-            LOGGER.w("updateFlagsForUid is allowed to be called only from the manager");
+        if (!isManagerOrAuthorized(Binder.getCallingUid())) {
+            LOGGER.w("getFlagsForUid is allowed to be called only from the manager or authorized clients");
             return 0;
         }
         return getFlagsForUidInternal(uid, mask, true);
@@ -387,8 +396,8 @@ public class ShizukuService extends Service<ShizukuUserServiceManager, ShizukuCl
 
     @Override
     public void updateFlagsForUid(int uid, int mask, int value) throws RemoteException {
-        if (UserHandleCompat.getAppId(Binder.getCallingUid()) != managerAppId) {
-            LOGGER.w("updateFlagsForUid is allowed to be called only from the manager");
+        if (!isManagerOrAuthorized(Binder.getCallingUid())) {
+            LOGGER.w("updateFlagsForUid is allowed to be called only from the manager or authorized clients");
             return;
         }
 

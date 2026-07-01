@@ -135,7 +135,6 @@
             android:directBootAware="true"
             android:excludeFromRecents="true"
             android:exported="true"
-            android:permission="android.permission.INTERACT_ACROSS_USERS_FULL"
             android:theme="@style/GrantPermissions">
             <intent-filter>
                 <action android:name="rikka.shizuku.intent.action.REQUEST_BINDER" />

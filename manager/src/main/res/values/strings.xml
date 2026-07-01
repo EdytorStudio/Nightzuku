@@ -260,12 +260,13 @@ With %1$s, in any terminal app, you can connect to and interact with the shell r
     <string name="lab_features_summary">Experimental features</string>
     <string name="shizuku_connectors_title">Nightzuku Connectors</string>
     <string name="shizuku_connectors_summary">Allow plugins to activate Nightzuku</string>
+    <string name="tapi_title">TAPI</string>
+    <string name="tapi_summary">Enable Termux API and command-line execution bridge</string>
+    <string name="tapi_warning_title">Enable TAPI?</string>
+    <string name="tapi_warning_message">TAPI allows authorized clients to manage Shizuku permissions and run commands. Enable this only if you trust the client.</string>
     <string name="nightdog_title">NightDog Beta</string>
     <string name="nightdog_summary">Lightweight system monitor with zero energy consumption</string>
     <string name="nightdog_description">NightDog monitors server health using inotify (zero polling). Runs as shell process.</string>
     <string name="unsafe_warning_title">Warning</string>
     <string name="unsafe_warning_message">Enabling this feature is UNSAFE. Are you sure?</string>
-    <string name="tapi_title">Termux APIs</string>
-    <string name="tapi_summary">Auto-grant Shizuku permission to Termux fork and enable tapi bridge</string>
-    <string name="tapi_description">When enabled, Nightzuku detects your Termux fork and automatically grants it Shizuku permission. This enables the tapi command-line tool for privileged shell access and Nightzuku management from within Termux.</string>
 </resources>
