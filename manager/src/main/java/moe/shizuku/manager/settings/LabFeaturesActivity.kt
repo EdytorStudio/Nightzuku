@@ -100,7 +100,9 @@ class LabFeaturesActivity : AppActivity() {
                                             showTapiWarningDialog = true
                                         } else {
                                             tapiEnabled = false
+                                            moe.shizuku.tapi.TapiSettings.init(this@LabFeaturesActivity)
                                             ModuleSettings.setTapiEnabled(false)
+                                            moe.shizuku.tapi.TapiSettings.setEnabled(false)
                                         }
                                     },
                                     modifier = Modifier.fillMaxWidth(),
@@ -181,7 +183,9 @@ class LabFeaturesActivity : AppActivity() {
                                 WearButton(onClick = {
                                     showTapiWarningDialog = false
                                     tapiEnabled = true
+                                    moe.shizuku.tapi.TapiSettings.init(this@LabFeaturesActivity)
                                     ModuleSettings.setTapiEnabled(true)
+                                    moe.shizuku.tapi.TapiSettings.setEnabled(true)
                                 }) {
                                     WearText(stringResource(android.R.string.ok))
                                 }
@@ -251,7 +255,9 @@ class LabFeaturesActivity : AppActivity() {
                                             showTapiWarningDialog = true
                                         } else {
                                             tapiEnabled = false
+                                            moe.shizuku.tapi.TapiSettings.init(this@LabFeaturesActivity)
                                             ModuleSettings.setTapiEnabled(false)
+                                            moe.shizuku.tapi.TapiSettings.setEnabled(false)
                                         }
                                     }
                                 )
@@ -305,7 +311,9 @@ class LabFeaturesActivity : AppActivity() {
                                 TextButton(onClick = {
                                     showTapiWarningDialog = false
                                     tapiEnabled = true
+                                    moe.shizuku.tapi.TapiSettings.init(this@LabFeaturesActivity)
                                     ModuleSettings.setTapiEnabled(true)
+                                    moe.shizuku.tapi.TapiSettings.setEnabled(true)
                                 }) {
                                     Text(stringResource(android.R.string.ok))
                                 }
