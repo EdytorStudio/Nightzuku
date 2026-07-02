@@ -435,9 +435,7 @@ class ModulesActivity : AppActivity() {
                             TextButton(onClick = { output = null }) {
                                 Text(stringResource(android.R.string.ok))
                             }
-                        },
-                        containerColor = TvMaterialTheme.colorScheme.surfaceVariant,
-                        shape = MaterialTheme.shapes.extraLarge
+                        }
                     )
                 }
 
@@ -463,9 +461,7 @@ class ModulesActivity : AppActivity() {
                             TextButton(onClick = { deleteTarget = null }) {
                                 Text(stringResource(android.R.string.cancel))
                             }
-                        },
-                        containerColor = TvMaterialTheme.colorScheme.surfaceVariant,
-                        shape = MaterialTheme.shapes.extraLarge
+                        }
                     )
                 }
 
