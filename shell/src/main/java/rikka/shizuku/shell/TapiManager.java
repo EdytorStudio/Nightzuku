@@ -507,7 +507,6 @@ public class TapiManager {
                 packageName = System.getenv("RISH_APPLICATION_ID");
                 if (TextUtils.isEmpty(packageName) || "PKG".equals(packageName)) {
                     abort("TAPI_PACKAGE or RISH_APPLICATION_ID is not set, set this environment variable to the id of current application (package name)");
-                    System.exit(1);
                 }
             }
         }

@@ -348,7 +348,6 @@ class LabFeaturesActivity : AppActivity() {
                         )
                     }
 
-
                 }
             }
         }
