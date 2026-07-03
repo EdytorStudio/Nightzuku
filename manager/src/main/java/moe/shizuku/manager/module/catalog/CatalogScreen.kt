@@ -231,78 +231,78 @@ fun CatalogScreen(
                 )
             }
         }
-    }
 
-    if (showTokenDialog) {
-        TokenInputDialog(
-            onDismiss = {
-                showTokenDialog = false
-                if (TokenStore.getToken(context).isNullOrBlank()) {
-                    onNavigateUp()
+        if (showTokenDialog) {
+            TokenInputDialog(
+                onDismiss = {
+                    showTokenDialog = false
+                    if (TokenStore.getToken(context).isNullOrBlank()) {
+                        onNavigateUp()
+                    }
+                },
+                onTokenSet = { pat ->
+                    TokenStore.setToken(context, pat)
+                    token = pat
+                    showTokenDialog = false
                 }
-            },
-            onTokenSet = { pat ->
-                TokenStore.setToken(context, pat)
-                token = pat
-                showTokenDialog = false
-            }
-        )
-    }
+            )
+        }
 
-    showInstallDialog?.let { module ->
-        InstallModeDialog(
-            module = module,
-            onDismiss = { showInstallDialog = null },
-            onInstall = { mode ->
-                showInstallDialog = null
-                ModuleSettings.setInstallMode(mode)
-                installing = module.moduleId
-                scope.launch {
-                    val owner = module.repoFullName.substringBefore('/')
-                    val repo = module.repoFullName.substringAfter('/')
-                    val result = installer.installModule(
-                        context = context,
-                        moduleId = module.moduleId,
-                        owner = owner,
-                        repo = repo,
-                        subPath = module.subPath
-                    )
-                    installing = null
-                    result.fold(
-                        onSuccess = {
-                            installSuccess = true
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.modules_install_success, module.moduleName),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        },
-                        onFailure = {
-                            Toast.makeText(
-                                context,
-                                context.getString(R.string.modules_catalog_install_failed, it.message ?: it.javaClass.simpleName),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        }
-                    )
+        showInstallDialog?.let { module ->
+            InstallModeDialog(
+                module = module,
+                onDismiss = { showInstallDialog = null },
+                onInstall = { mode ->
+                    showInstallDialog = null
+                    ModuleSettings.setInstallMode(mode)
+                    installing = module.moduleId
+                    scope.launch {
+                        val owner = module.repoFullName.substringBefore('/')
+                        val repo = module.repoFullName.substringAfter('/')
+                        val result = installer.installModule(
+                            context = context,
+                            moduleId = module.moduleId,
+                            owner = owner,
+                            repo = repo,
+                            subPath = module.subPath
+                        )
+                        installing = null
+                        result.fold(
+                            onSuccess = {
+                                installSuccess = true
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.modules_install_success, module.moduleName),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            },
+                            onFailure = {
+                                Toast.makeText(
+                                    context,
+                                    context.getString(R.string.modules_catalog_install_failed, it.message ?: it.javaClass.simpleName),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
+                        )
+                    }
                 }
-            }
-        )
-    }
+            )
+        }
 
-    if (installSuccess) {
-        AlertDialog(
-            onDismissRequest = { installSuccess = false },
-            title = { Text(stringResource(R.string.modules_install_success, "")) },
-            confirmButton = {
-                TextButton(onClick = {
-                    installSuccess = false
-                    onNavigateUp()
-                }) {
-                    Text(stringResource(android.R.string.ok))
+        if (installSuccess) {
+            AlertDialog(
+                onDismissRequest = { installSuccess = false },
+                title = { Text(stringResource(R.string.modules_install_success, "")) },
+                confirmButton = {
+                    TextButton(onClick = {
+                        installSuccess = false
+                        onNavigateUp()
+                    }) {
+                        Text(stringResource(android.R.string.ok))
+                    }
                 }
-            }
-        )
+            )
+        }
     }
 }
 

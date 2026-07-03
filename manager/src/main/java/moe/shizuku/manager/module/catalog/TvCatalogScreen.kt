@@ -50,6 +50,7 @@ import moe.shizuku.manager.module.discovery.ModuleDiscoveryManager
 import moe.shizuku.manager.module.update.ModuleInstaller
 import moe.shizuku.manager.ui.compose.ShizukuIcon
 import moe.shizuku.manager.ui.compose.TvMenuButton
+import moe.shizuku.manager.ui.compose.TvShizukuTheme
 
 private enum class TvCatalogSort(val labelRes: Int) {
     NEWEST(R.string.modules_catalog_sort_newest),
@@ -131,267 +132,269 @@ fun TvCatalogScreen(
         }
     }
 
-    Row(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .padding(32.dp)
-                .size(width = 300.dp, height = 500.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
-        ) {
-            TvText(
-                text = stringResource(R.string.modules_catalog),
-                style = TvMaterialTheme.typography.headlineMedium,
-                color = TvMaterialTheme.colorScheme.primary,
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
-
-            TvMenuButton(
-                icon = R.drawable.ic_arrow_back_24,
-                label = android.R.string.cancel,
-                onClick = onNavigateUp
-            )
-
-            TvCatalogSort.entries.forEach { sort ->
-                TvMenuButton(
-                    icon = when (sort) {
-                        TvCatalogSort.NEWEST -> R.drawable.ic_outline_info_24
-                        TvCatalogSort.OLDEST -> R.drawable.ic_outline_info_24
-                        TvCatalogSort.STARS -> R.drawable.ic_server_restart
-                        TvCatalogSort.OFFICIAL -> R.drawable.ic_outline_open_in_new_24
-                    },
-                    label = sort.labelRes,
-                    onClick = { sortBy = sort },
-                    isSelected = sortBy == sort
+    TvShizukuTheme {
+        Row(modifier = Modifier.fillMaxSize()) {
+            Column(
+                modifier = Modifier
+                    .padding(32.dp)
+                    .size(width = 300.dp, height = 500.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                TvText(
+                    text = stringResource(R.string.modules_catalog),
+                    style = TvMaterialTheme.typography.headlineMedium,
+                    color = TvMaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(bottom = 24.dp)
                 )
-            }
-        }
 
-        when {
-            isLoading -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    TvText(
-                        text = stringResource(R.string.modules_catalog_loading),
-                        style = TvMaterialTheme.typography.headlineSmall,
-                        color = TvMaterialTheme.colorScheme.onSurface
+                TvMenuButton(
+                    icon = R.drawable.ic_arrow_back_24,
+                    label = android.R.string.cancel,
+                    onClick = onNavigateUp
+                )
+
+                TvCatalogSort.entries.forEach { sort ->
+                    TvMenuButton(
+                        icon = when (sort) {
+                            TvCatalogSort.NEWEST -> R.drawable.ic_outline_info_24
+                            TvCatalogSort.OLDEST -> R.drawable.ic_outline_info_24
+                            TvCatalogSort.STARS -> R.drawable.ic_server_restart
+                            TvCatalogSort.OFFICIAL -> R.drawable.ic_outline_open_in_new_24
+                        },
+                        label = sort.labelRes,
+                        onClick = { sortBy = sort },
+                        isSelected = sortBy == sort
                     )
                 }
             }
 
-            error != null && sortedModules.isEmpty() -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    TvText(
-                        text = error ?: stringResource(R.string.modules_catalog_error),
-                        style = TvMaterialTheme.typography.headlineSmall,
-                        color = TvMaterialTheme.colorScheme.error
-                    )
-                }
-            }
-
-            sortedModules.isEmpty() -> {
-                Box(
-                    modifier = Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    TvText(
-                        text = stringResource(R.string.modules_catalog_empty),
-                        style = TvMaterialTheme.typography.headlineSmall,
-                        color = TvMaterialTheme.colorScheme.onSurface
-                    )
-                }
-            }
-
-            else -> {
-                LazyVerticalGrid(
-                    columns = GridCells.Fixed(1),
-                    modifier = Modifier.fillMaxSize(),
-                    contentPadding = androidx.compose.foundation.layout.PaddingValues(32.dp),
-                    horizontalArrangement = Arrangement.spacedBy(24.dp),
-                    verticalArrangement = Arrangement.spacedBy(24.dp)
-                ) {
-                    items(sortedModules, key = { "${it.repoFullName}/${it.moduleId}" }) { module ->
-                        val isInstalling = installingId == module.moduleId
-
-                        TvCatalogModuleCard(
-                            module = module,
-                            isInstalling = isInstalling,
-                            onInstall = { showInstallDialog = module },
-                            onViewOnGitHub = {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(module.repoUrl))
-                                context.startActivity(intent)
-                            },
-                            onClick = { showInstallDialog = module }
-                        )
-                    }
-                }
-            }
-        }
-    }
-
-    if (showTokenDialog) {
-        val showWarning = tokenInput.isNotBlank() && !TokenStore.isValidTokenFormat(tokenInput)
-        AlertDialog(
-            onDismissRequest = {
-                showTokenDialog = false
-                if (tokenInput.isBlank()) onNavigateUp()
-            },
-            title = { TvText(stringResource(R.string.modules_catalog_token_required)) },
-            text = {
-                Column {
-                    TvText(
-                        text = stringResource(R.string.modules_catalog_token_description),
-                        style = TvMaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(bottom = 16.dp)
-                    )
-                    OutlinedTextField(
-                        value = tokenInput,
-                        onValueChange = { tokenInput = it },
-                        label = { TvText(stringResource(R.string.modules_catalog_token_hint)) },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    if (showWarning) {
+            when {
+                isLoading -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
                         TvText(
-                            text = stringResource(R.string.modules_catalog_token_format_warning),
-                            style = TvMaterialTheme.typography.bodySmall,
-                            color = TvMaterialTheme.colorScheme.error,
-                            modifier = Modifier.padding(top = 8.dp)
+                            text = stringResource(R.string.modules_catalog_loading),
+                            style = TvMaterialTheme.typography.headlineSmall,
+                            color = TvMaterialTheme.colorScheme.onSurface
                         )
                     }
                 }
-            },
-            confirmButton = {
-                TvSurface(
-                    onClick = {
-                        TokenStore.setToken(context, tokenInput)
-                        showTokenDialog = false
-                        scope.launch {
-                            isLoading = true
-                            try {
-                                modules = discoveryManager.getModules(forceRefresh = true)
-                            } catch (e: Exception) {
-                                error = e.message
-                            }
-                            isLoading = false
+
+                error != null && sortedModules.isEmpty() -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        TvText(
+                            text = error ?: stringResource(R.string.modules_catalog_error),
+                            style = TvMaterialTheme.typography.headlineSmall,
+                            color = TvMaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+
+                sortedModules.isEmpty() -> {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        TvText(
+                            text = stringResource(R.string.modules_catalog_empty),
+                            style = TvMaterialTheme.typography.headlineSmall,
+                            color = TvMaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                }
+
+                else -> {
+                    LazyVerticalGrid(
+                        columns = GridCells.Fixed(1),
+                        modifier = Modifier.fillMaxSize(),
+                        contentPadding = androidx.compose.foundation.layout.PaddingValues(32.dp),
+                        horizontalArrangement = Arrangement.spacedBy(24.dp),
+                        verticalArrangement = Arrangement.spacedBy(24.dp)
+                    ) {
+                        items(sortedModules, key = { "${it.repoFullName}/${it.moduleId}" }) { module ->
+                            val isInstalling = installingId == module.moduleId
+
+                            TvCatalogModuleCard(
+                                module = module,
+                                isInstalling = isInstalling,
+                                onInstall = { showInstallDialog = module },
+                                onViewOnGitHub = {
+                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(module.repoUrl))
+                                    context.startActivity(intent)
+                                },
+                                onClick = { showInstallDialog = module }
+                            )
                         }
-                    },
-                    enabled = tokenInput.isNotBlank(),
-                    shape = TvClickableSurfaceDefaults.shape(TvMaterialTheme.shapes.small),
-                    colors = TvClickableSurfaceDefaults.colors(
-                        containerColor = TvMaterialTheme.colorScheme.primaryContainer
-                    )
-                ) {
-                    TvText(
-                        text = stringResource(android.R.string.ok),
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
-                    )
+                    }
                 }
-            },
-            dismissButton = {
-                TvSurface(
-                    onClick = { showTokenDialog = false },
-                    shape = TvClickableSurfaceDefaults.shape(TvMaterialTheme.shapes.small),
-                    colors = TvClickableSurfaceDefaults.colors(
-                        containerColor = TvMaterialTheme.colorScheme.surfaceVariant
-                    )
-                ) {
-                    TvText(
-                        text = stringResource(android.R.string.cancel),
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
-                    )
-                }
-            },
-            containerColor = TvMaterialTheme.colorScheme.surfaceVariant,
-            shape = TvMaterialTheme.shapes.extraLarge
-        )
-    }
+            }
+        }
 
-    showInstallDialog?.let { module ->
-        AlertDialog(
-            onDismissRequest = { showInstallDialog = null },
-            title = { TvText(module.moduleName) },
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    TvText(
-                        text = stringResource(R.string.modules_catalog_install_description),
-                        style = TvMaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.padding(bottom = 8.dp)
-                    )
-                }
-            },
-            confirmButton = {
-                Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        if (showTokenDialog) {
+            val showWarning = tokenInput.isNotBlank() && !TokenStore.isValidTokenFormat(tokenInput)
+            AlertDialog(
+                onDismissRequest = {
+                    showTokenDialog = false
+                    if (tokenInput.isBlank()) onNavigateUp()
+                },
+                title = { TvText(stringResource(R.string.modules_catalog_token_required)) },
+                text = {
+                    Column {
+                        TvText(
+                            text = stringResource(R.string.modules_catalog_token_description),
+                            style = TvMaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(bottom = 16.dp)
+                        )
+                        OutlinedTextField(
+                            value = tokenInput,
+                            onValueChange = { tokenInput = it },
+                            label = { TvText(stringResource(R.string.modules_catalog_token_hint)) },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        if (showWarning) {
+                            TvText(
+                                text = stringResource(R.string.modules_catalog_token_format_warning),
+                                style = TvMaterialTheme.typography.bodySmall,
+                                color = TvMaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(top = 8.dp)
+                            )
+                        }
+                    }
+                },
+                confirmButton = {
                     TvSurface(
-                        onClick = { startInstall(module, ModuleSettings.InstallMode.SOURCES) },
+                        onClick = {
+                            TokenStore.setToken(context, tokenInput)
+                            showTokenDialog = false
+                            scope.launch {
+                                isLoading = true
+                                try {
+                                    modules = discoveryManager.getModules(forceRefresh = true)
+                                } catch (e: Exception) {
+                                    error = e.message
+                                }
+                                isLoading = false
+                            }
+                        },
+                        enabled = tokenInput.isNotBlank(),
                         shape = TvClickableSurfaceDefaults.shape(TvMaterialTheme.shapes.small),
                         colors = TvClickableSurfaceDefaults.colors(
                             containerColor = TvMaterialTheme.colorScheme.primaryContainer
                         )
                     ) {
                         TvText(
-                            text = stringResource(R.string.modules_catalog_install_sources),
+                            text = stringResource(android.R.string.ok),
                             modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
                         )
                     }
+                },
+                dismissButton = {
                     TvSurface(
-                        onClick = { startInstall(module, ModuleSettings.InstallMode.RELEASE) },
+                        onClick = { showTokenDialog = false },
+                        shape = TvClickableSurfaceDefaults.shape(TvMaterialTheme.shapes.small),
+                        colors = TvClickableSurfaceDefaults.colors(
+                            containerColor = TvMaterialTheme.colorScheme.surfaceVariant
+                        )
+                    ) {
+                        TvText(
+                            text = stringResource(android.R.string.cancel),
+                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
+                        )
+                    }
+                },
+                containerColor = TvMaterialTheme.colorScheme.surfaceVariant,
+                shape = TvMaterialTheme.shapes.extraLarge
+            )
+        }
+
+        showInstallDialog?.let { module ->
+            AlertDialog(
+                onDismissRequest = { showInstallDialog = null },
+                title = { TvText(module.moduleName) },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                        TvText(
+                            text = stringResource(R.string.modules_catalog_install_description),
+                            style = TvMaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.padding(bottom = 8.dp)
+                        )
+                    }
+                },
+                confirmButton = {
+                    Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                        TvSurface(
+                            onClick = { startInstall(module, ModuleSettings.InstallMode.SOURCES) },
+                            shape = TvClickableSurfaceDefaults.shape(TvMaterialTheme.shapes.small),
+                            colors = TvClickableSurfaceDefaults.colors(
+                                containerColor = TvMaterialTheme.colorScheme.primaryContainer
+                            )
+                        ) {
+                            TvText(
+                                text = stringResource(R.string.modules_catalog_install_sources),
+                                modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
+                            )
+                        }
+                        TvSurface(
+                            onClick = { startInstall(module, ModuleSettings.InstallMode.RELEASE) },
+                            shape = TvClickableSurfaceDefaults.shape(TvMaterialTheme.shapes.small),
+                            colors = TvClickableSurfaceDefaults.colors(
+                                containerColor = TvMaterialTheme.colorScheme.primaryContainer
+                            )
+                        ) {
+                            TvText(
+                                text = stringResource(R.string.modules_catalog_install_release),
+                                modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
+                            )
+                        }
+                    }
+                },
+                dismissButton = {
+                    TvSurface(
+                        onClick = { showInstallDialog = null },
+                        shape = TvClickableSurfaceDefaults.shape(TvMaterialTheme.shapes.small),
+                        colors = TvClickableSurfaceDefaults.colors(
+                            containerColor = TvMaterialTheme.colorScheme.surfaceVariant
+                        )
+                    ) {
+                        TvText(
+                            text = stringResource(android.R.string.cancel),
+                            modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
+                        )
+                    }
+                },
+                containerColor = TvMaterialTheme.colorScheme.surfaceVariant,
+                shape = TvMaterialTheme.shapes.extraLarge
+            )
+        }
+
+        installResult?.let { (message, success) ->
+            AlertDialog(
+                onDismissRequest = { installResult = null },
+                title = { TvText(if (success) stringResource(R.string.modules_install_success, message) else message) },
+                confirmButton = {
+                    TvSurface(
+                        onClick = { installResult = null },
                         shape = TvClickableSurfaceDefaults.shape(TvMaterialTheme.shapes.small),
                         colors = TvClickableSurfaceDefaults.colors(
                             containerColor = TvMaterialTheme.colorScheme.primaryContainer
                         )
                     ) {
                         TvText(
-                            text = stringResource(R.string.modules_catalog_install_release),
+                            text = stringResource(android.R.string.ok),
                             modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
                         )
                     }
-                }
-            },
-            dismissButton = {
-                TvSurface(
-                    onClick = { showInstallDialog = null },
-                    shape = TvClickableSurfaceDefaults.shape(TvMaterialTheme.shapes.small),
-                    colors = TvClickableSurfaceDefaults.colors(
-                        containerColor = TvMaterialTheme.colorScheme.surfaceVariant
-                    )
-                ) {
-                    TvText(
-                        text = stringResource(android.R.string.cancel),
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
-                    )
-                }
-            },
-            containerColor = TvMaterialTheme.colorScheme.surfaceVariant,
-            shape = TvMaterialTheme.shapes.extraLarge
-        )
-    }
-
-    installResult?.let { (message, success) ->
-        AlertDialog(
-            onDismissRequest = { installResult = null },
-            title = { TvText(if (success) stringResource(R.string.modules_install_success, message) else message) },
-            confirmButton = {
-                TvSurface(
-                    onClick = { installResult = null },
-                    shape = TvClickableSurfaceDefaults.shape(TvMaterialTheme.shapes.small),
-                    colors = TvClickableSurfaceDefaults.colors(
-                        containerColor = TvMaterialTheme.colorScheme.primaryContainer
-                    )
-                ) {
-                    TvText(
-                        text = stringResource(android.R.string.ok),
-                        modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
-                    )
-                }
-            },
-            containerColor = TvMaterialTheme.colorScheme.surfaceVariant,
-            shape = TvMaterialTheme.shapes.extraLarge
-        )
+                },
+                containerColor = TvMaterialTheme.colorScheme.surfaceVariant,
+                shape = TvMaterialTheme.shapes.extraLarge
+            )
+        }
     }
 }
 

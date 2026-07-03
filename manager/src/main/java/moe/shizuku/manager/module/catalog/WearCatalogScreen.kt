@@ -53,6 +53,7 @@ import moe.shizuku.manager.module.discovery.ModuleDiscoveryManager
 import moe.shizuku.manager.module.update.ModuleInstaller
 import moe.shizuku.manager.ui.compose.WearScreenScaffold
 import moe.shizuku.manager.ui.compose.WearScreenTitle
+import moe.shizuku.manager.ui.compose.WearShizukuTheme
 
 @Composable
 fun WearCatalogScreen(
@@ -137,294 +138,296 @@ fun WearCatalogScreen(
         }
     }
 
-    WearScreenScaffold { state ->
-        TransformingLazyColumn(
-            state = state,
-            modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(horizontal = 10.dp, vertical = 44.dp),
-            verticalArrangement = Arrangement.spacedBy(12.dp)
-        ) {
-            item {
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp)
-                ) {
-                    WearIconButton(
-                        onClick = onBack,
-                        modifier = Modifier.size(WearIconButtonDefaults.DefaultButtonSize)
+    WearShizukuTheme {
+        WearScreenScaffold { state ->
+            TransformingLazyColumn(
+                state = state,
+                modifier = Modifier.fillMaxSize(),
+                contentPadding = PaddingValues(horizontal = 10.dp, vertical = 44.dp),
+                verticalArrangement = Arrangement.spacedBy(12.dp)
+            ) {
+                item {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 4.dp)
                     ) {
-                        WearIcon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = null)
-                    }
-                    Spacer(Modifier.width(4.dp))
-                    WearScreenTitle(icon = Icons.Rounded.CloudDownload, title = stringResource(R.string.modules_catalog_title))
-                }
-            }
-
-            item {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    WearIconButton(
-                        onClick = { showFilterDialog = true },
-                        modifier = Modifier.size(WearIconButtonDefaults.DefaultButtonSize)
-                    ) {
-                        WearIcon(Icons.Rounded.FilterList, contentDescription = stringResource(R.string.wear_catalog_filter))
-                    }
-                    Spacer(Modifier.width(6.dp))
-                    WearText(
-                        text = sortLabels[sortIndex],
-                        style = WearMaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
-
-            if (isLoading) {
-                item {
-                    WearText(
-                        text = stringResource(R.string.modules_catalog_loading),
-                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                        style = WearMaterialTheme.typography.bodyMedium,
-                        color = WearMaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                }
-            }
-
-            if (error != null) {
-                item {
-                    WearText(
-                        text = error ?: "",
-                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                        style = WearMaterialTheme.typography.bodySmall,
-                        color = WearMaterialTheme.colorScheme.error
-                    )
-                }
-            }
-
-            if (!isLoading && sortedModules.isEmpty()) {
-                item {
-                    WearText(
-                        text = stringResource(R.string.modules_catalog_empty),
-                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
-                        style = WearMaterialTheme.typography.bodyMedium
-                    )
-                }
-            }
-
-            items(sortedModules, key = { "${it.repoFullName}/${it.moduleId}" }) { module ->
-                val isInstalling = installingId == module.moduleId
-
-                WearTitleCard(
-                    onClick = {},
-                    title = {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier.fillMaxWidth()
+                        WearIconButton(
+                            onClick = onBack,
+                            modifier = Modifier.size(WearIconButtonDefaults.DefaultButtonSize)
                         ) {
-                            WearText(
-                                text = module.moduleName,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.weight(1f),
-                                fontWeight = FontWeight.Bold
-                            )
-                            if (module.stars > 0) {
+                            WearIcon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = null)
+                        }
+                        Spacer(Modifier.width(4.dp))
+                        WearScreenTitle(icon = Icons.Rounded.CloudDownload, title = stringResource(R.string.modules_catalog_title))
+                    }
+                }
+
+                item {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        WearIconButton(
+                            onClick = { showFilterDialog = true },
+                            modifier = Modifier.size(WearIconButtonDefaults.DefaultButtonSize)
+                        ) {
+                            WearIcon(Icons.Rounded.FilterList, contentDescription = stringResource(R.string.wear_catalog_filter))
+                        }
+                        Spacer(Modifier.width(6.dp))
+                        WearText(
+                            text = sortLabels[sortIndex],
+                            style = WearMaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+
+                if (isLoading) {
+                    item {
+                        WearText(
+                            text = stringResource(R.string.modules_catalog_loading),
+                            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                            style = WearMaterialTheme.typography.bodyMedium,
+                            color = WearMaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                if (error != null) {
+                    item {
+                        WearText(
+                            text = error ?: "",
+                            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                            style = WearMaterialTheme.typography.bodySmall,
+                            color = WearMaterialTheme.colorScheme.error
+                        )
+                    }
+                }
+
+                if (!isLoading && sortedModules.isEmpty()) {
+                    item {
+                        WearText(
+                            text = stringResource(R.string.modules_catalog_empty),
+                            modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
+                            style = WearMaterialTheme.typography.bodyMedium
+                        )
+                    }
+                }
+
+                items(sortedModules, key = { "${it.repoFullName}/${it.moduleId}" }) { module ->
+                    val isInstalling = installingId == module.moduleId
+
+                    WearTitleCard(
+                        onClick = {},
+                        title = {
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
                                 WearText(
-                                    text = "\u2605${module.stars}",
+                                    text = module.moduleName,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.weight(1f),
+                                    fontWeight = FontWeight.Bold
+                                )
+                                if (module.stars > 0) {
+                                    WearText(
+                                        text = "\u2605${module.stars}",
+                                        style = WearMaterialTheme.typography.labelSmall,
+                                        color = WearMaterialTheme.colorScheme.primary
+                                    )
+                                }
+                            }
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .transformedHeight(this, transformationSpec),
+                        transformation = SurfaceTransformation(transformationSpec),
+                        colors = WearCardDefaults.cardColors()
+                    ) {
+                        Column(modifier = Modifier.fillMaxWidth()) {
+                            if (module.version != null) {
+                                WearText(
+                                    text = "v${module.version}",
                                     style = WearMaterialTheme.typography.labelSmall,
-                                    color = WearMaterialTheme.colorScheme.primary
+                                    color = WearMaterialTheme.colorScheme.onSurfaceVariant
                                 )
                             }
-                        }
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .transformedHeight(this, transformationSpec),
-                    transformation = SurfaceTransformation(transformationSpec),
-                    colors = WearCardDefaults.cardColors()
-                ) {
-                    Column(modifier = Modifier.fillMaxWidth()) {
-                        if (module.version != null) {
-                            WearText(
-                                text = "v${module.version}",
-                                style = WearMaterialTheme.typography.labelSmall,
-                                color = WearMaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                        if (module.repoDescription != null) {
-                            WearText(
-                                text = module.repoDescription,
-                                style = WearMaterialTheme.typography.bodySmall,
-                                color = WearMaterialTheme.colorScheme.onSurfaceVariant,
-                                maxLines = 2,
-                                overflow = TextOverflow.Ellipsis,
-                                modifier = Modifier.padding(top = 4.dp)
-                            )
-                        }
+                            if (module.repoDescription != null) {
+                                WearText(
+                                    text = module.repoDescription,
+                                    style = WearMaterialTheme.typography.bodySmall,
+                                    color = WearMaterialTheme.colorScheme.onSurfaceVariant,
+                                    maxLines = 2,
+                                    overflow = TextOverflow.Ellipsis,
+                                    modifier = Modifier.padding(top = 4.dp)
+                                )
+                            }
 
-                        if (isInstalling) {
-                            WearText(
-                                text = stringResource(R.string.modules_catalog_installing),
-                                style = WearMaterialTheme.typography.labelSmall,
-                                color = WearMaterialTheme.colorScheme.primary,
-                                modifier = Modifier.padding(top = 8.dp)
-                            )
-                        } else {
-                            WearButton(
-                                onClick = { showInstallDialog = module },
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(top = 8.dp),
-                                colors = WearButtonDefaults.filledTonalButtonColors()
-                            ) {
-                                WearText(text = stringResource(R.string.modules_catalog_install))
+                            if (isInstalling) {
+                                WearText(
+                                    text = stringResource(R.string.modules_catalog_installing),
+                                    style = WearMaterialTheme.typography.labelSmall,
+                                    color = WearMaterialTheme.colorScheme.primary,
+                                    modifier = Modifier.padding(top = 8.dp)
+                                )
+                            } else {
+                                WearButton(
+                                    onClick = { showInstallDialog = module },
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(top = 8.dp),
+                                    colors = WearButtonDefaults.filledTonalButtonColors()
+                                ) {
+                                    WearText(text = stringResource(R.string.modules_catalog_install))
+                                }
                             }
                         }
                     }
                 }
             }
         }
-    }
 
-    if (showFilterDialog) {
-        WearAlertDialog(
-            visible = true,
-            onDismissRequest = { showFilterDialog = false },
-            title = { WearText(stringResource(R.string.wear_catalog_sort_by)) },
-            confirmButton = {},
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    sortLabels.forEachIndexed { index, label ->
-                        WearButton(
-                            onClick = {
-                                sortIndex = index
-                                showFilterDialog = false
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = if (sortIndex == index) WearButtonDefaults.buttonColors()
-                                     else WearButtonDefaults.filledTonalButtonColors()
-                        ) {
-                            WearText(text = label)
-                        }
-                    }
-                }
-            }
-        )
-    }
-
-    showInstallDialog?.let { module ->
-        WearAlertDialog(
-            visible = true,
-            onDismissRequest = { showInstallDialog = null },
-            title = { WearText(module.moduleName) },
-            confirmButton = {},
-            text = {
-                Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    WearButton(
-                        onClick = { startInstall(module, ModuleSettings.InstallMode.SOURCES) },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = WearButtonDefaults.filledTonalButtonColors()
-                    ) {
-                        WearText(text = stringResource(R.string.modules_catalog_install_sources))
-                    }
-                    WearButton(
-                        onClick = { startInstall(module, ModuleSettings.InstallMode.RELEASE) },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = WearButtonDefaults.filledTonalButtonColors()
-                    ) {
-                        WearText(text = stringResource(R.string.modules_catalog_install_release))
-                    }
-                    Spacer(Modifier.height(4.dp))
-                    WearButton(
-                        onClick = { showInstallDialog = null },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = WearButtonDefaults.buttonColors()
-                    ) {
-                        WearText(text = stringResource(android.R.string.cancel))
-                    }
-                }
-            }
-        )
-    }
-
-    installResult?.let { (message, success) ->
-        WearAlertDialog(
-            visible = true,
-            onDismissRequest = { installResult = null },
-            title = { WearText(if (success) stringResource(R.string.modules_install_success, message) else message) },
-            confirmButton = {
-                WearButton(onClick = { installResult = null }) {
-                    WearText(stringResource(android.R.string.ok))
-                }
-            }
-        )
-    }
-
-    if (showTokenDialog) {
-        var tokenInput by remember { mutableStateOf(token) }
-        val showWarning = tokenInput.isNotBlank() && !TokenStore.isValidTokenFormat(tokenInput)
-        WearAlertDialog(
-            visible = true,
-            onDismissRequest = {
-                showTokenDialog = false
-                if (token.isBlank()) onBack()
-            },
-            title = { WearText(stringResource(R.string.modules_catalog_token_required)) },
-            confirmButton = {
-                WearButton(
-                    onClick = {
-                        TokenStore.setToken(context, tokenInput)
-                        token = tokenInput
-                        showTokenDialog = false
-                        scope.launch {
-                            isLoading = true
-                            try {
-                                modules = discoveryManager.getModules(forceRefresh = true)
-                            } catch (e: Exception) {
-                                error = e.message
+        if (showFilterDialog) {
+            WearAlertDialog(
+                visible = true,
+                onDismissRequest = { showFilterDialog = false },
+                title = { WearText(stringResource(R.string.wear_catalog_sort_by)) },
+                confirmButton = {},
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        sortLabels.forEachIndexed { index, label ->
+                            WearButton(
+                                onClick = {
+                                    sortIndex = index
+                                    showFilterDialog = false
+                                },
+                                modifier = Modifier.fillMaxWidth(),
+                                colors = if (sortIndex == index) WearButtonDefaults.buttonColors()
+                                         else WearButtonDefaults.filledTonalButtonColors()
+                            ) {
+                                WearText(text = label)
                             }
-                            isLoading = false
                         }
-                    },
-                    enabled = tokenInput.isNotBlank(),
-                    colors = WearButtonDefaults.filledTonalButtonColors()
-                ) {
-                    WearText(stringResource(android.R.string.ok))
-                }
-            },
-            text = {
-                Column {
-                    WearText(
-                        text = stringResource(R.string.modules_catalog_token_description),
-                        style = WearMaterialTheme.typography.bodySmall,
-                        color = WearMaterialTheme.colorScheme.onSurfaceVariant
-                    )
-                    Spacer(Modifier.height(8.dp))
-                    WearText(
-                        text = if (tokenInput.isNotBlank()) tokenInput.take(8) + "..." else stringResource(R.string.modules_catalog_token_hint),
-                        style = WearMaterialTheme.typography.bodyMedium,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(vertical = 4.dp)
-                    )
-                    if (showWarning) {
-                        WearText(
-                            text = stringResource(R.string.modules_catalog_token_format_warning),
-                            style = WearMaterialTheme.typography.labelSmall,
-                            color = WearMaterialTheme.colorScheme.error,
-                            modifier = Modifier.padding(top = 4.dp)
-                        )
                     }
+                }
+            )
+        }
+
+        showInstallDialog?.let { module ->
+            WearAlertDialog(
+                visible = true,
+                onDismissRequest = { showInstallDialog = null },
+                title = { WearText(module.moduleName) },
+                confirmButton = {},
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        WearButton(
+                            onClick = { startInstall(module, ModuleSettings.InstallMode.SOURCES) },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = WearButtonDefaults.filledTonalButtonColors()
+                        ) {
+                            WearText(text = stringResource(R.string.modules_catalog_install_sources))
+                        }
+                        WearButton(
+                            onClick = { startInstall(module, ModuleSettings.InstallMode.RELEASE) },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = WearButtonDefaults.filledTonalButtonColors()
+                        ) {
+                            WearText(text = stringResource(R.string.modules_catalog_install_release))
+                        }
+                        Spacer(Modifier.height(4.dp))
+                        WearButton(
+                            onClick = { showInstallDialog = null },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = WearButtonDefaults.buttonColors()
+                        ) {
+                            WearText(text = stringResource(android.R.string.cancel))
+                        }
+                    }
+                }
+            )
+        }
+
+        installResult?.let { (message, success) ->
+            WearAlertDialog(
+                visible = true,
+                onDismissRequest = { installResult = null },
+                title = { WearText(if (success) stringResource(R.string.modules_install_success, message) else message) },
+                confirmButton = {
+                    WearButton(onClick = { installResult = null }) {
+                        WearText(stringResource(android.R.string.ok))
+                    }
+                }
+            )
+        }
+
+        if (showTokenDialog) {
+            var tokenInput by remember { mutableStateOf(token) }
+            val showWarning = tokenInput.isNotBlank() && !TokenStore.isValidTokenFormat(tokenInput)
+            WearAlertDialog(
+                visible = true,
+                onDismissRequest = {
+                    showTokenDialog = false
+                    if (token.isBlank()) onBack()
+                },
+                title = { WearText(stringResource(R.string.modules_catalog_token_required)) },
+                confirmButton = {
                     WearButton(
-                        onClick = { tokenInput = "" },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = WearButtonDefaults.buttonColors()
+                        onClick = {
+                            TokenStore.setToken(context, tokenInput)
+                            token = tokenInput
+                            showTokenDialog = false
+                            scope.launch {
+                                isLoading = true
+                                try {
+                                    modules = discoveryManager.getModules(forceRefresh = true)
+                                } catch (e: Exception) {
+                                    error = e.message
+                                }
+                                isLoading = false
+                            }
+                        },
+                        enabled = tokenInput.isNotBlank(),
+                        colors = WearButtonDefaults.filledTonalButtonColors()
                     ) {
-                        WearText(stringResource(R.string.update_settings_github_pat_clear))
+                        WearText(stringResource(android.R.string.ok))
+                    }
+                },
+                text = {
+                    Column {
+                        WearText(
+                            text = stringResource(R.string.modules_catalog_token_description),
+                            style = WearMaterialTheme.typography.bodySmall,
+                            color = WearMaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        WearText(
+                            text = if (tokenInput.isNotBlank()) tokenInput.take(8) + "..." else stringResource(R.string.modules_catalog_token_hint),
+                            style = WearMaterialTheme.typography.bodyMedium,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp)
+                        )
+                        if (showWarning) {
+                            WearText(
+                                text = stringResource(R.string.modules_catalog_token_format_warning),
+                                style = WearMaterialTheme.typography.labelSmall,
+                                color = WearMaterialTheme.colorScheme.error,
+                                modifier = Modifier.padding(top = 4.dp)
+                            )
+                        }
+                        WearButton(
+                            onClick = { tokenInput = "" },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = WearButtonDefaults.buttonColors()
+                        ) {
+                            WearText(stringResource(R.string.update_settings_github_pat_clear))
+                        }
                     }
                 }
-            }
-        )
+            )
+        }
     }
 }
