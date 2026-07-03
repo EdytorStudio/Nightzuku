@@ -44,6 +44,7 @@ fun WearSettingsScreen(
     moduleAccessMode: moe.shizuku.manager.module.ModuleSettings.AccessMode,
     onModuleAccessModeClick: () -> Unit,
     onCustomPermissionsClick: () -> Unit,
+    onGitHubTokenClick: () -> Unit,
 
     showNightDialog: Boolean,
     nightLabels: List<String>,
@@ -158,6 +159,18 @@ fun WearSettingsScreen(
                         .transformedHeight(this, transformationSpec),
                     transformation = SurfaceTransformation(transformationSpec),
                     title = { WearText(labFeaturesTitle) }
+                )
+            }
+
+            item {
+                WearTitleCard(
+                    onClick = onGitHubTokenClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .transformedHeight(this, transformationSpec),
+                    transformation = SurfaceTransformation(transformationSpec),
+                    title = { WearText(stringResource(R.string.update_settings_github_pat)) },
+                    subtitle = { WearText(stringResource(R.string.update_settings_github_pat_title)) }
                 )
             }
         }

@@ -74,6 +74,8 @@ class SettingsActivity : AppActivity() {
             var showNightDialog by remember { mutableStateOf(false) }
             var showModuleModeDialog by remember { mutableStateOf(false) }
             var showCustomPermissionsDialog by remember { mutableStateOf(false) }
+            var showTokenSettings by remember { mutableStateOf(false) }
+            var showLabFeatures by remember { mutableStateOf(false) }
 
             var moduleAccessMode by remember {
                 mutableStateOf(ModuleSettings.getAccessMode())
@@ -112,7 +114,32 @@ class SettingsActivity : AppActivity() {
             val isTv = moe.shizuku.manager.utils.EnvironmentUtils.isTV(this@SettingsActivity)
 
             androidx.compose.foundation.layout.Box(modifier = Modifier.fillMaxSize()) {
-                if (isWatch) {
+                if (showTokenSettings) {
+                    if (isWatch) {
+                        moe.shizuku.manager.ui.compose.WearShizukuTheme {
+                            moe.shizuku.manager.module.catalog.WearTokenSettingsScreen(
+                                onBack = { showTokenSettings = false }
+                            )
+                        }
+                    } else if (isTv) {
+                        moe.shizuku.manager.ui.compose.TvShizukuTheme {
+                            TvTokenSettingsScreen(
+                                onNavigateUp = { showTokenSettings = false }
+                            )
+                        }
+                    }
+                } else if (showLabFeatures) {
+                    if (isTv) {
+                        moe.shizuku.manager.ui.compose.TvShizukuTheme {
+                            TvLabMenuScreen(
+                                onNavigateUp = { showLabFeatures = false }
+                            )
+                        }
+                    } else {
+                        startActivity(android.content.Intent(this@SettingsActivity, LabFeaturesActivity::class.java))
+                        showLabFeatures = false
+                    }
+                } else if (isWatch) {
                     moe.shizuku.manager.ui.compose.WearShizukuTheme {
                         WearSettingsScreen(
                         startOnBoot = startOnBoot,
@@ -142,12 +169,19 @@ class SettingsActivity : AppActivity() {
                         moduleAccessMode = moduleAccessMode,
                         onModuleAccessModeClick = { showModuleModeDialog = true },
                         onCustomPermissionsClick = { showCustomPermissionsDialog = true },
+                        onGitHubTokenClick = { showTokenSettings = true },
                         showNightDialog = false,
                         nightLabels = nightLabels,
                         nightValues = nightValues,
                         currentNightMode = nightMode,
-                        onNightModeSelect = { },
-                        onNightDialogDismiss = { }
+                        onNightModeSelect = { value ->
+                            prefs.edit().putInt(NIGHT_MODE, value).apply()
+                            nightMode = value
+                            AppCompatDelegate.setDefaultNightMode(value)
+                            showNightDialog = false
+                            recreate()
+                        },
+                        onNightDialogDismiss = { showNightDialog = false }
                     )
                 }
             } else if (isTv) {
@@ -190,8 +224,9 @@ class SettingsActivity : AppActivity() {
                             recommandAction = enabled
                         },
                         onLabFeaturesClick = {
-                            startActivity(android.content.Intent(this@SettingsActivity, LabFeaturesActivity::class.java))
-                        }
+                            showLabFeatures = true
+                        },
+                        onGitHubTokenClick = { showTokenSettings = true }
                     )
                 }
             } else {

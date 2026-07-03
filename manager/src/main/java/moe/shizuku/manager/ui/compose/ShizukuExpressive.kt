@@ -815,6 +815,7 @@ private fun roundedIconFor(@DrawableRes icon: Int): ImageVector? {
         R.drawable.ic_terminal_24 -> Icons.Rounded.Terminal
         R.drawable.ic_code_24dp -> Icons.Rounded.Code
         R.drawable.ic_server_ok_24dp -> Icons.Rounded.Check
+        R.drawable.ic_outline_store_24 -> Icons.Rounded.Apps
         else -> null
     }
 }

@@ -269,4 +269,68 @@ With %1$s, in any terminal app, you can connect to and interact with the shell r
     <string name="nightdog_description">NightDog monitors server health using inotify (zero polling). Runs as shell process.</string>
     <string name="unsafe_warning_title">Warning</string>
     <string name="unsafe_warning_message">Enabling this feature is UNSAFE. Are you sure?</string>
+
+    <!-- Update Settings -->
+    <string name="update_settings_title">Update Settings</string>
+    <string name="update_settings_catalog">Module Catalog</string>
+    <string name="update_settings_catalog_enabled">Enable catalog</string>
+    <string name="update_settings_catalog_enabled_summary">Show discovered modules from GitHub Topics</string>
+    <string name="update_settings_frequency">Update Frequency</string>
+    <string name="update_settings_frequency_label">Check for updates</string>
+    <string name="update_settings_frequency_manual">Manual</string>
+    <string name="update_settings_frequency_daily">Daily</string>
+    <string name="update_settings_frequency_weekly">Weekly</string>
+    <string name="update_settings_install_mode">Install Mode</string>
+    <string name="update_settings_install_mode_label">Default install method</string>
+    <string name="update_settings_install_mode_sources">Build from sources</string>
+    <string name="update_settings_install_mode_release">Download release ZIP</string>
+    <string name="update_settings_github">GitHub</string>
+    <string name="update_settings_github_pat">Personal access token</string>
+    <string name="update_settings_github_pat_set">Token set</string>
+    <string name="update_settings_github_pat_unset">Not set (60 requests/hour)</string>
+    <string name="update_settings_github_pat_title">GitHub Personal Access Token</string>
+    <string name="update_settings_github_pat_description">Optional. A GitHub PAT increases API rate limits from 60 to 5000 requests/hour. Only needs public_repo scope for public repositories.</string>
+    <string name="update_settings_github_pat_label">Token</string>
+    <string name="update_settings_github_pat_show">Show</string>
+    <string name="update_settings_github_pat_hide">Hide</string>
+    <string name="update_settings_github_pat_clear">Clear</string>
+    <string name="update_settings_github_pat_delete">Delete token</string>
+    <string name="update_settings_github_pat_delete_summary">Remove stored GitHub token</string>
+
+    <!-- Module Catalog -->
+    <string name="modules_catalog">Catalog</string>
+    <string name="modules_catalog_title">Module Catalog</string>
+    <string name="modules_catalog_empty">No modules found</string>
+    <string name="modules_catalog_sort_newest">Newest</string>
+    <string name="modules_catalog_sort_oldest">Oldest</string>
+    <string name="modules_catalog_sort_stars">Stars</string>
+    <string name="modules_catalog_sort_official">Official</string>
+    <string name="modules_catalog_install_sources">Install from sources</string>
+    <string name="modules_catalog_install_release">Download release ZIP</string>
+    <string name="modules_catalog_install_description">Choose how to install this module:</string>
+    <string name="modules_catalog_install_success">Module installed successfully</string>
+    <string name="modules_catalog_install_failed">Install failed: %s</string>
+    <string name="modules_catalog_token_required">GitHub token required</string>
+    <string name="modules_catalog_token_hint">GitHub Personal Access Token</string>
+    <string name="modules_catalog_token_description">A token is needed to search GitHub for modules. You can create one at github.com/settings/tokens</string>
+    <string name="modules_catalog_token_format_warning">Token should start with ghp_ or github_pat_ and be at least 30 characters</string>
+    <string name="modules_catalog_loading">Loading catalog…</string>
+    <string name="modules_catalog_error">Failed to load catalog</string>
+    <string name="modules_catalog_install">Install</string>
+    <string name="modules_catalog_installing">Installing…</string>
+    <string name="modules_catalog_view_github">View on GitHub</string>
+    <string name="modules_catalog_skip_token">Skip</string>
+    <string name="modules_catalog_open">Open Catalog</string>
+
+    <!-- TV Status -->
+    <string name="tv_status_active">ACTIVE</string>
+    <string name="tv_status_disabled">DISABLED</string>
+    <string name="tv_status_trusted">TRUSTED</string>
+
+    <!-- Wear Catalog -->
+    <string name="wear_catalog_sort_newest">Newest</string>
+    <string name="wear_catalog_sort_stars">Stars</string>
+    <string name="wear_catalog_sort_official">Official</string>
+    <string name="wear_catalog_sort_by">Sort by</string>
+    <string name="wear_catalog_filter">Filter</string>
 </resources>

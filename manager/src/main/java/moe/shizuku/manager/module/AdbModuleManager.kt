@@ -28,6 +28,12 @@ object AdbModuleManager {
     private val idRegex = Regex("[A-Za-z][A-Za-z0-9._-]{1,63}")
     private val installMutexes = ConcurrentHashMap<String, Mutex>()
 
+    fun cleanupStagingDirs(context: Context) {
+        modulesRoot(context).listFiles { file ->
+            file.isDirectory && file.name.startsWith(".") && file.name.endsWith(".installing")
+        }?.forEach { it.deleteRecursively() }
+    }
+
     fun modulesRoot(context: Context): File {
         return File(context.filesDir, MODULES_DIR).apply { mkdirs() }
     }
@@ -41,6 +47,7 @@ object AdbModuleManager {
     }
 
     suspend fun install(context: Context, uri: Uri): AdbModule = withContext(Dispatchers.IO) {
+        cleanupStagingDirs(context)
         val temp = File.createTempFile("module-", ".zip", context.cacheDir)
         try {
             context.contentResolver.openInputStream(uri).use { input ->
@@ -57,8 +64,10 @@ object AdbModuleManager {
                 require(idRegex.matches(id)) { "Invalid module id: $id" }
 
                 installMutexes.getOrPut(id) { Mutex() }.withLock {
-                    val target = File(modulesRoot(context), id)
-                    val staging = File(modulesRoot(context), ".$id.installing")
+                    val modulesDir = modulesRoot(context)
+
+                    val target = File(modulesDir, id)
+                    val staging = File(modulesDir, ".$id.installing")
                     staging.deleteRecursively()
                     staging.mkdirs()
 

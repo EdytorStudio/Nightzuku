@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.OpenInNew
 import androidx.compose.material.icons.rounded.Delete
 import androidx.compose.material.icons.rounded.Extension
+import androidx.compose.material.icons.rounded.CloudDownload
 import androidx.compose.material.icons.rounded.FileUpload
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Security
@@ -64,7 +65,8 @@ fun WearModulesScreen(
     onOpenWebUi: (AdbModule) -> Unit,
     onDelete: (AdbModule) -> Unit,
     onTrustChange: (AdbModule, Boolean) -> Unit,
-    onInstallZip: () -> Unit
+    onInstallZip: () -> Unit,
+    onOpenCatalog: () -> Unit
 ) {
     val transformationSpec = rememberTransformationSpec()
 
@@ -96,6 +98,27 @@ fun WearModulesScreen(
                         WearIcon(Icons.Rounded.FileUpload, contentDescription = null, modifier = Modifier.size(20.dp))
                         Spacer(Modifier.width(8.dp))
                         WearText(text = stringResource(R.string.modules_install_zip))
+                    }
+                }
+            }
+
+            item {
+                WearButton(
+                    onClick = onOpenCatalog,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .transformedHeight(this, transformationSpec),
+                    transformation = SurfaceTransformation(transformationSpec),
+                    colors = WearButtonDefaults.filledTonalButtonColors()
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        WearIcon(Icons.Rounded.CloudDownload, contentDescription = null, modifier = Modifier.size(20.dp))
+                        Spacer(Modifier.width(8.dp))
+                        WearText(text = stringResource(R.string.modules_catalog_open))
                     }
                 }
             }
