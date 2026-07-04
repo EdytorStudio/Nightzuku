@@ -34,12 +34,12 @@ class SourceZipBuilder private constructor() {
         return try {
             ZipOutputStream(zipFile.outputStream()).use { zip ->
                 for (file in files) {
-                    if (!isModuleFile(file.name)) continue
+                    if (!isModuleFile(file.path)) continue
                     if (file.downloadUrl == null) continue
 
                     val content = downloadFile(file.downloadUrl, githubPat) ?: continue
-                    val entryName = file.name.trimStart('/').let { path ->
-                        if (prefix.isNotEmpty() && path.startsWith(prefix)) path.removePrefix(prefix) else path.substringAfterLast('/')
+                    val entryName = file.path.trimStart('/').let { fullPath ->
+                        if (prefix.isNotEmpty() && fullPath.startsWith(prefix)) fullPath.removePrefix(prefix) else fullPath.substringAfterLast('/')
                     }
                     val entry = ZipEntry(entryName)
                     entry.size = content.size.toLong()
@@ -98,6 +98,8 @@ class SourceZipBuilder private constructor() {
                 fileName.endsWith(".sh") ||
                 fileName.startsWith("banner.") ||
                 cleanName.contains("webui/") ||
+                cleanName.contains("webroot/") ||
+                cleanName.contains("web/") ||
                 WEB_EXTENSIONS.any { ext -> fileName.endsWith(ext) }
     }
 

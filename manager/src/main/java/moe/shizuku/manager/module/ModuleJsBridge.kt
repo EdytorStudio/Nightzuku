@@ -120,11 +120,10 @@ class ModuleJsBridge(
         return try {
             val service = IShizukuService.Stub.asInterface(binder)
             val env = buildEnvironment(mode, options.extraEnv)
-            val cwd = resolveModuleDirectory(options.cwd)
             val remote = service.newProcess(
                 arrayOf("sh", "-c", command),
                 env,
-                cwd.absolutePath
+                "/data/local/tmp"
             )
 
             var stdout = ""

@@ -77,6 +77,8 @@ fun TvCatalogScreen(
     var installingId by remember { mutableStateOf<String?>(null) }
     var installResult by remember { mutableStateOf<Pair<String, Boolean>?>(null) }
     var showInstallDialog by remember { mutableStateOf<DiscoveredModule?>(null) }
+    var showDangerDialog by remember { mutableStateOf(false) }
+    var dangerReason by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
         val savedToken = TokenStore.getToken(context)
@@ -389,6 +391,40 @@ fun TvCatalogScreen(
                             text = stringResource(android.R.string.ok),
                             modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp)
                         )
+                    }
+                },
+                containerColor = TvMaterialTheme.colorScheme.surfaceVariant,
+                shape = TvMaterialTheme.shapes.extraLarge
+            )
+        }
+
+        if (showDangerDialog) {
+            AlertDialog(
+                onDismissRequest = { showDangerDialog = false },
+                title = { TvText("Potentially unsafe module") },
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TvText("This module has unusually large content:", style = TvMaterialTheme.typography.bodyMedium)
+                        dangerReason?.let { TvText(it, style = TvMaterialTheme.typography.bodySmall, color = TvMaterialTheme.colorScheme.error) }
+                        TvText("Continue anyway?", style = TvMaterialTheme.typography.bodyMedium)
+                    }
+                },
+                confirmButton = {
+                    TvSurface(
+                        onClick = { showDangerDialog = false },
+                        shape = TvClickableSurfaceDefaults.shape(TvMaterialTheme.shapes.small),
+                        colors = TvClickableSurfaceDefaults.colors(containerColor = TvMaterialTheme.colorScheme.primaryContainer)
+                    ) {
+                        TvText("Continue", modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp))
+                    }
+                },
+                dismissButton = {
+                    TvSurface(
+                        onClick = { showDangerDialog = false },
+                        shape = TvClickableSurfaceDefaults.shape(TvMaterialTheme.shapes.small),
+                        colors = TvClickableSurfaceDefaults.colors(containerColor = TvMaterialTheme.colorScheme.surfaceVariant)
+                    ) {
+                        TvText("Go back", modifier = Modifier.padding(horizontal = 24.dp, vertical = 12.dp))
                     }
                 },
                 containerColor = TvMaterialTheme.colorScheme.surfaceVariant,

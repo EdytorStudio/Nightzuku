@@ -69,7 +69,7 @@ case "$FIRST_ARG" in
   --help|-h)
     exec "$APP_PROCESS" -Djava.class.path="$DEX" /system/bin --nice-name=tapi-manager rikka.shizuku.shell.TapiManager "$@"
     ;;
-  nightzuku|status|start|stop|grant|revoke|modules)
+  nightzuku|status|start|stop|grant|revoke|modules|--modules)
     exec "$APP_PROCESS" -Djava.class.path="$DEX" /system/bin --nice-name=tapi-manager rikka.shizuku.shell.TapiManager "$@"
     ;;
   *)

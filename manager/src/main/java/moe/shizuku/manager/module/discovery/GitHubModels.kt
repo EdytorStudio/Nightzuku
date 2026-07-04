@@ -37,6 +37,7 @@ data class SearchResponse(
 @Serializable
 data class ContentItem(
     val name: String,
+    val path: String,
     val type: String,
     @SerialName("download_url") val downloadUrl: String? = null
 )

@@ -269,13 +269,32 @@ public class TapiManager {
     }
 
     private static void cmdModules() {
-        String[] cmd = new String[]{"ls", "/data/adb/modules"};
+        String modulesDir = "/data/data/" + BuildConfig.MANAGER_APPLICATION_ID + "/files/adb_modules";
+        String[] cmd = new String[]{"sh", "-c",
+                "for d in " + modulesDir + "/*/; do " +
+                        "[ -d \"$d\" ] || continue; " +
+                        "id=\"$(basename \"$d\")\"; " +
+                        "name=\"$id\"; version=\"-\"; " +
+                        "if [ -f \"$d/module.prop\" ]; then " +
+                        "  name=$(grep '^name=' \"$d/module.prop\" | head -1 | cut -d= -f2-); " +
+                        "  version=$(grep '^version=' \"$d/module.prop\" | head -1 | cut -d= -f2-); " +
+                        "fi; " +
+                        "[ -z \"$name\" ] && name=\"$id\"; " +
+                        "[ -z \"$version\" ] && version=\"-\"; " +
+                        "if [ -f \"$d/disable\" ]; then " +
+                        "  status=\"disabled\"; " +
+                        "else " +
+                        "  status=\"enabled\"; " +
+                        "fi; " +
+                        "echo \"$id | $name | v$version | $status\"; " +
+                        "done"
+        };
         try {
             String output = execRemoteProcess(cmd);
             if (output == null || output.isEmpty()) {
-                System.out.println("tapi: No modules installed or /data/adb/modules not accessible");
+                System.out.println("tapi: No Nightzuku modules installed");
             } else {
-                System.out.println("Installed modules:");
+                System.out.println("Installed Nightzuku modules:");
                 System.out.println(output);
             }
             System.out.flush();
@@ -413,7 +432,7 @@ public class TapiManager {
         System.out.println("  nightzuku stop                Stop Nightzuku server");
         System.out.println("  nightzuku grant <package>     Grant Shizuku permission to a package");
         System.out.println("  nightzuku revoke <package>    Revoke Shizuku permission from a package");
-        System.out.println("  nightzuku modules             List installed Magisk modules");
+        System.out.println("  nightzuku modules             List installed Nightzuku modules");
         System.out.println("  --help, -h                    Show this help message");
         System.out.println();
         System.out.println("Shell commands:");
@@ -464,7 +483,8 @@ public class TapiManager {
             isNightzukuCommand = true;
             commandStartIndex = 1;
         } else if ("status".equals(rawArgs[0]) || "start".equals(rawArgs[0]) || "stop".equals(rawArgs[0])
-                || "grant".equals(rawArgs[0]) || "revoke".equals(rawArgs[0]) || "modules".equals(rawArgs[0])) {
+                || "grant".equals(rawArgs[0]) || "revoke".equals(rawArgs[0])
+                || "modules".equals(rawArgs[0]) || "--modules".equals(rawArgs[0])) {
             isNightzukuCommand = true;
             commandStartIndex = 0;
         }
@@ -490,6 +510,9 @@ public class TapiManager {
         }
 
         command = rawArgs[commandStartIndex];
+        if (command.startsWith("--")) {
+            command = command.substring(2);
+        }
         if (commandStartIndex + 1 < rawArgs.length) {
             args = new String[rawArgs.length - commandStartIndex - 1];
             System.arraycopy(rawArgs, commandStartIndex + 1, args, 0, args.length);

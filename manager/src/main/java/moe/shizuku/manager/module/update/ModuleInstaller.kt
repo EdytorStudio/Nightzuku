@@ -102,14 +102,49 @@ class ModuleInstaller private constructor() {
 
             val body = resp.body?.string() ?: return null
             val items = json.decodeFromString<List<ContentItem>>(body)
-            val files = items.filter { it.type == "file" }
 
-            if (files.isEmpty()) {
+            val allFiles = mutableListOf<ContentItem>()
+            val dirsToFetch = ArrayDeque<String>()
+
+            for (item in items) {
+                if (item.type == "file") {
+                    allFiles.add(item)
+                } else if (item.type == "dir") {
+                    dirsToFetch.add(item.name)
+                }
+            }
+
+            while (dirsToFetch.isNotEmpty()) {
+                val dirName = dirsToFetch.removeFirst()
+                val parentPath = path.trim('/').let { if (it.isNotEmpty()) "$it/$dirName" else dirName }
+                val dirUrl = "https://api.github.com/repos/$owner/$repo/contents/$parentPath?ref=$defaultBranch"
+                val dirRequest = buildRequest(dirUrl, githubPat)
+                val dirResponse = client.newCall(dirRequest).execute()
+
+                dirResponse.use { dirResp ->
+                    rateLimit.update(dirResp.headers)
+                    if (!dirResp.isSuccessful) {
+                        Log.w(TAG, "Contents API failed for subdir: ${dirResp.code} for $dirUrl")
+                        return@use
+                    }
+                    val dirBody = dirResp.body?.string() ?: return@use
+                    val dirItems = json.decodeFromString<List<ContentItem>>(dirBody)
+                    for (dirItem in dirItems) {
+                        if (dirItem.type == "file") {
+                            allFiles.add(dirItem)
+                        } else if (dirItem.type == "dir") {
+                            dirsToFetch.add(dirItem.name)
+                        }
+                    }
+                }
+            }
+
+            if (allFiles.isEmpty()) {
                 Log.w(TAG, "No files found in $url")
                 return null
             }
 
-        val zipFile = sourceZipBuilder.buildZip(context, moduleId, files, githubPat, subPath)
+        val zipFile = sourceZipBuilder.buildZip(context, moduleId, allFiles, githubPat, subPath)
             ?: return null
 
             return Uri.fromFile(zipFile)

@@ -81,6 +81,8 @@ fun WearCatalogScreen(
     var showFilterDialog by remember { mutableStateOf(false) }
     var showInstallDialog by remember { mutableStateOf<DiscoveredModule?>(null) }
     var showTokenDialog by remember { mutableStateOf(false) }
+    var showDangerDialog by remember { mutableStateOf(false) }
+    var dangerReason by remember { mutableStateOf<String?>(null) }
     var token by remember { mutableStateOf(TokenStore.getToken(context) ?: "") }
 
     LaunchedEffect(Unit) {
@@ -424,6 +426,38 @@ fun WearCatalogScreen(
                             colors = WearButtonDefaults.buttonColors()
                         ) {
                             WearText(stringResource(R.string.update_settings_github_pat_clear))
+                        }
+                    }
+                }
+            )
+        }
+
+        if (showDangerDialog) {
+            WearAlertDialog(
+                visible = true,
+                onDismissRequest = { showDangerDialog = false },
+                title = { WearText("Potentially unsafe module") },
+                confirmButton = {},
+                text = {
+                    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        WearText(
+                            text = dangerReason ?: "Large content detected",
+                            style = WearMaterialTheme.typography.bodySmall,
+                            color = WearMaterialTheme.colorScheme.error
+                        )
+                        WearButton(
+                            onClick = { showDangerDialog = false },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = WearButtonDefaults.buttonColors()
+                        ) {
+                            WearText("Continue anyway")
+                        }
+                        WearButton(
+                            onClick = { showDangerDialog = false },
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = WearButtonDefaults.filledTonalButtonColors()
+                        ) {
+                            WearText("Go back")
                         }
                     }
                 }
